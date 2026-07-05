@@ -1,4 +1,4 @@
-const CACHE='baterias-solar-v8';
+const CACHE='baterias-solar-v9';
 const FILES=[
  './','./index.html','./manifest.json','./icon-192.png','./icon-512.png',
  './logo-senai-hub.webp','./chumbo-acido.webp','./agm.webp','./opzs.webp','./opzv.webp','./lifepo4.webp'
