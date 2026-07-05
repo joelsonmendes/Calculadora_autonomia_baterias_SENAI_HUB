@@ -1,0 +1,1073 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="theme-color" content="#f5f8fc" />
+  <title>Calculadora de Autonomia de Baterias | SENAI Hub</title>
+
+  <style>
+    :root {
+      --blue: #0b4f9c;
+      --blue-soft: #eaf3ff;
+      --orange: #f05a24;
+      --orange-soft: #fff1ea;
+      --green: #2e9f65;
+      --green-soft: #ebf8f1;
+      --red: #d62839;
+      --red-soft: #fff0f2;
+      --yellow: #f4a62a;
+      --yellow-soft: #fff8e8;
+      --text: #1f2937;
+      --muted: #64748b;
+      --line: #dbe5f1;
+      --bg: #f5f8fc;
+      --white: #ffffff;
+      --shadow: 0 12px 32px rgba(15, 23, 42, 0.08);
+      --radius: 22px;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    html {
+      scroll-behavior: smooth;
+    }
+
+    body {
+      margin: 0;
+      font-family: Arial, Helvetica, sans-serif;
+      color: var(--text);
+      background:
+        radial-gradient(circle at top left, rgba(11,79,156,0.10), transparent 34%),
+        radial-gradient(circle at bottom right, rgba(240,90,36,0.09), transparent 30%),
+        var(--bg);
+      min-height: 100vh;
+    }
+
+    .container {
+      width: min(100%, 1280px);
+      margin: auto;
+      padding: 16px;
+    }
+
+    .hero {
+      background: var(--white);
+      border: 1px solid var(--line);
+      border-radius: 28px;
+      box-shadow: var(--shadow);
+      padding: 20px;
+      display: grid;
+      grid-template-columns: 220px 1fr;
+      gap: 22px;
+      align-items: center;
+      margin-bottom: 18px;
+    }
+
+    .logo-card {
+      background: #050505;
+      border-radius: 20px;
+      padding: 14px;
+      display: grid;
+      place-items: center;
+      min-height: 122px;
+    }
+
+    .logo-card img {
+      width: 100%;
+      max-height: 105px;
+      object-fit: contain;
+    }
+
+    .tag {
+      display: inline-block;
+      background: var(--orange-soft);
+      color: var(--orange);
+      border: 1px solid #ffd8c8;
+      padding: 8px 13px;
+      border-radius: 999px;
+      font-weight: 800;
+      font-size: 0.9rem;
+      margin-bottom: 10px;
+    }
+
+    h1 {
+      color: var(--blue);
+      margin: 0;
+      font-size: clamp(1.55rem, 4vw, 2.65rem);
+      line-height: 1.08;
+    }
+
+    .hero p {
+      color: var(--muted);
+      margin: 10px 0 0;
+      line-height: 1.55;
+      font-size: 1rem;
+    }
+
+    .layout {
+      display: grid;
+      grid-template-columns: minmax(0, 1.05fr) minmax(360px, 0.95fr);
+      gap: 18px;
+      align-items: start;
+    }
+
+    .card {
+      background: var(--white);
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      padding: 18px;
+      margin-bottom: 18px;
+    }
+
+    h2 {
+      color: var(--blue);
+      margin: 0 0 14px;
+      font-size: 1.25rem;
+    }
+
+    h3 {
+      color: var(--orange);
+      margin: 18px 0 10px;
+      font-size: 1.05rem;
+    }
+
+    .num {
+      background: var(--blue-soft);
+      color: var(--blue);
+      border: 1px solid #cfe3ff;
+      display: inline-grid;
+      place-items: center;
+      width: 30px;
+      height: 30px;
+      border-radius: 50%;
+      font-size: 0.9rem;
+      margin-right: 7px;
+      font-weight: 900;
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 13px;
+    }
+
+    .full {
+      grid-column: 1 / -1;
+    }
+
+    label {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-weight: 800;
+      color: #243044;
+      margin-bottom: 7px;
+      font-size: 0.93rem;
+    }
+
+    input, select {
+      width: 100%;
+      padding: 12px;
+      border: 1px solid #cbd5e1;
+      border-radius: 13px;
+      font-size: 1rem;
+      background: white;
+      outline: none;
+    }
+
+    input:focus, select:focus {
+      border-color: var(--blue);
+      box-shadow: 0 0 0 3px rgba(11, 79, 156, 0.12);
+    }
+
+    .help {
+      border: 0;
+      width: 21px;
+      height: 21px;
+      min-height: 21px;
+      padding: 0;
+      border-radius: 50%;
+      background: var(--orange-soft);
+      color: var(--orange);
+      font-weight: 900;
+      cursor: pointer;
+      font-size: 0.8rem;
+    }
+
+    .hint {
+      color: var(--muted);
+      font-size: 0.82rem;
+      margin-top: 6px;
+      line-height: 1.35;
+    }
+
+    .actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-top: 16px;
+    }
+
+    button {
+      border: 0;
+      border-radius: 14px;
+      padding: 12px 16px;
+      min-height: 44px;
+      font-weight: 900;
+      cursor: pointer;
+    }
+
+    .primary {
+      background: var(--blue);
+      color: white;
+    }
+
+    .secondary {
+      background: var(--orange);
+      color: white;
+    }
+
+    .ghost {
+      background: var(--blue-soft);
+      color: var(--blue);
+      border: 1px solid #cfe3ff;
+    }
+
+    .table-wrap {
+      overflow-x: auto;
+      border: 1px solid var(--line);
+      border-radius: 16px;
+    }
+
+    table {
+      width: 100%;
+      min-width: 720px;
+      border-collapse: collapse;
+      background: white;
+    }
+
+    th {
+      background: var(--blue-soft);
+      color: var(--blue);
+      text-align: left;
+      padding: 11px;
+      border-bottom: 2px solid #cfe3ff;
+      font-size: 0.9rem;
+    }
+
+    td {
+      padding: 9px;
+      border-bottom: 1px solid #edf2f7;
+      font-size: 0.9rem;
+    }
+
+    td input {
+      padding: 9px;
+      border-radius: 10px;
+    }
+
+    .results {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 12px;
+    }
+
+    .result {
+      background: #f8fbff;
+      border: 1px solid #dbeafe;
+      border-left: 6px solid var(--blue);
+      border-radius: 18px;
+      padding: 15px;
+      min-height: 120px;
+    }
+
+    .result.orange {
+      background: var(--orange-soft);
+      border-color: #ffd8c8;
+      border-left-color: var(--orange);
+    }
+
+    .result.green {
+      background: var(--green-soft);
+      border-color: #ccebd8;
+      border-left-color: var(--green);
+    }
+
+    .result.red {
+      background: var(--red-soft);
+      border-color: #ffd1d7;
+      border-left-color: var(--red);
+    }
+
+    .r-title {
+      color: #334155;
+      font-weight: 900;
+      font-size: 0.9rem;
+      margin-bottom: 6px;
+    }
+
+    .r-value {
+      color: var(--blue);
+      font-size: clamp(1.35rem, 3vw, 1.78rem);
+      font-weight: 900;
+    }
+
+    .orange .r-value {
+      color: var(--orange);
+    }
+
+    .green .r-value {
+      color: var(--green);
+    }
+
+    .red .r-value {
+      color: var(--red);
+    }
+
+    .small {
+      color: var(--muted);
+      font-size: 0.87rem;
+      line-height: 1.42;
+      margin-top: 6px;
+    }
+
+    .pill {
+      display: inline-block;
+      padding: 8px 12px;
+      background: var(--orange-soft);
+      color: var(--orange);
+      border: 1px solid #ffd8c8;
+      border-radius: 999px;
+      font-weight: 900;
+      margin-bottom: 12px;
+    }
+
+    .tabs {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin: 16px 0 8px;
+    }
+
+    .tab {
+      background: var(--blue-soft);
+      color: var(--blue);
+      border: 1px solid #cfe3ff;
+      padding: 9px 12px;
+      border-radius: 999px;
+    }
+
+    .tab.active {
+      background: var(--blue);
+      color: white;
+    }
+
+    .content {
+      display: none;
+    }
+
+    .content.active {
+      display: block;
+    }
+
+    .box {
+      background: #f8fbff;
+      border: 1px solid #dbeafe;
+      border-radius: 16px;
+      padding: 14px;
+      line-height: 1.55;
+      margin: 10px 0;
+    }
+
+    .box.orange {
+      background: var(--orange-soft);
+      border-color: #ffd8c8;
+    }
+
+    .box.green {
+      background: var(--green-soft);
+      border-color: #ccebd8;
+    }
+
+    .box.yellow {
+      background: var(--yellow-soft);
+      border-color: #ffe3ad;
+    }
+
+    .formula {
+      background: #f7f9fc;
+      color: #1f2937;
+      border: 1px solid var(--line);
+      border-left: 6px solid var(--orange);
+      border-radius: 16px;
+      padding: 14px;
+      margin: 10px 0;
+      line-height: 1.62;
+    }
+
+    .formula strong {
+      color: var(--blue);
+    }
+
+    .tech-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 12px;
+    }
+
+    .tech {
+      background: #ffffff;
+      border: 1px solid var(--line);
+      border-radius: 17px;
+      padding: 14px;
+      line-height: 1.5;
+    }
+
+    .tech b {
+      color: var(--blue);
+      display: block;
+      margin-bottom: 4px;
+    }
+
+    .curve {
+      background: #fff;
+      border: 1px solid var(--line);
+      border-radius: 18px;
+      padding: 14px;
+      margin-top: 12px;
+    }
+
+    svg {
+      width: 100%;
+      max-height: 260px;
+    }
+
+    .footer {
+      text-align: center;
+      color: var(--muted);
+      padding: 16px 8px 22px;
+      line-height: 1.5;
+      font-size: 0.92rem;
+    }
+
+    .footer b {
+      color: var(--blue);
+    }
+
+    .modal-bg {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(15, 23, 42, 0.45);
+      z-index: 20;
+      align-items: center;
+      justify-content: center;
+      padding: 16px;
+    }
+
+    .modal {
+      width: min(100%, 560px);
+      background: white;
+      border-radius: 22px;
+      padding: 18px;
+      box-shadow: 0 20px 70px rgba(0,0,0,0.28);
+      border: 1px solid var(--line);
+    }
+
+    .modal h3 {
+      margin-top: 0;
+      color: var(--blue);
+    }
+
+    .modal p {
+      line-height: 1.55;
+      color: #334155;
+    }
+
+    .close {
+      float: right;
+      background: var(--orange-soft);
+      color: var(--orange);
+      border: 1px solid #ffd8c8;
+      width: auto;
+      min-height: 36px;
+      padding: 8px 12px;
+    }
+
+    @media (min-width: 1051px) {
+      .sticky {
+        position: sticky;
+        top: 12px;
+      }
+    }
+
+    @media (max-width: 1050px) {
+      .layout {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    @media (max-width: 720px) {
+      .container {
+        padding: 10px;
+      }
+
+      .hero {
+        grid-template-columns: 1fr;
+        text-align: center;
+        padding: 16px;
+      }
+
+      .logo-card {
+        width: min(100%, 260px);
+        margin: auto;
+      }
+
+      .grid, .results, .tech-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .actions, .tabs {
+        display: grid;
+        grid-template-columns: 1fr;
+      }
+
+      button {
+        width: 100%;
+      }
+
+      .card {
+        padding: 15px;
+      }
+
+      .result {
+        min-height: auto;
+      }
+    }
+
+    @media print {
+      body {
+        background: white;
+      }
+
+      .container {
+        width: 100%;
+        padding: 0;
+      }
+
+      .hero, .card {
+        box-shadow: none;
+        page-break-inside: avoid;
+      }
+
+      button, .tabs {
+        display: none;
+      }
+
+      .content {
+        display: block !important;
+      }
+
+      .layout {
+        grid-template-columns: 1fr;
+      }
+
+      .table-wrap {
+        overflow: visible;
+      }
+
+      table {
+        min-width: 0;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <div class="container">
+    <header class="hero">
+      <div class="logo-card">
+        <img src="logo-senai-hub.webp" alt="Logo SENAI Hub Inovação e Tecnologia">
+      </div>
+
+      <div>
+        <div class="tag">SENAI Hub | Energia Solar Fotovoltaica</div>
+        <h1>Calculadora Didática de Autonomia de Baterias</h1>
+        <p>
+          Aplicativo educacional para sistemas <strong>off-grid</strong> e <strong>híbridos</strong>,
+          com cálculo em Wh, Ah, série/paralelo, corrente, taxa C, curva de descarga e glossário técnico.
+        </p>
+      </div>
+    </header>
+
+    <main class="layout">
+      <section>
+        <div class="card">
+          <h2><span class="num">1</span>Dados do sistema</h2>
+
+          <div class="grid">
+            <div class="full">
+              <label>Tipo de sistema <button class="help" onclick="ajuda('sistema')">?</button></label>
+              <select id="modo">
+                <option value="offgrid">Off-grid — banco alimenta as cargas</option>
+                <option value="hibrido">Híbrido — banco atende cargas essenciais</option>
+              </select>
+              <div class="hint">No híbrido, considere apenas as cargas que precisam funcionar na falta de energia.</div>
+            </div>
+
+            <div>
+              <label>Tecnologia da bateria <button class="help" onclick="ajuda('tecnologia')">?</button></label>
+              <select id="tipoBateria">
+                <option value="chumbo">Chumbo-ácido</option>
+                <option value="agm">AGM</option>
+                <option value="gel">Gel</option>
+                <option value="opzs">OPzS</option>
+                <option value="opzv">OPzV</option>
+                <option value="litio" selected>Lítio/LiFePO₄</option>
+              </select>
+            </div>
+
+            <div>
+              <label>Consumo diário (Wh/dia) <button class="help" onclick="ajuda('wh')">?</button></label>
+              <input id="consumo" type="number" value="2360" min="0">
+            </div>
+
+            <div>
+              <label>Dias de autonomia <button class="help" onclick="ajuda('autonomia')">?</button></label>
+              <input id="dias" type="number" value="1" min="0" step="0.1">
+            </div>
+
+            <div>
+              <label>Tensão do banco (V) <button class="help" onclick="ajuda('tensao')">?</button></label>
+              <select id="tensao">
+                <option value="12">12 V</option>
+                <option value="24">24 V</option>
+                <option value="48" selected>48 V</option>
+                <option value="96">96 V</option>
+              </select>
+            </div>
+
+            <div>
+              <label>DoD (%) <button class="help" onclick="ajuda('dod')">?</button></label>
+              <input id="dod" type="number" value="80" min="1" max="100">
+              <div class="hint">DoD significa profundidade de descarga.</div>
+            </div>
+
+            <div>
+              <label>Eficiência (%) <button class="help" onclick="ajuda('eficiencia')">?</button></label>
+              <input id="eficiencia" type="number" value="90" min="1" max="100">
+            </div>
+
+            <div>
+              <label>Banco instalado (Ah) <button class="help" onclick="ajuda('ah')">?</button></label>
+              <input id="capacidade" type="number" value="200" min="0">
+            </div>
+
+            <div>
+              <label>Tensão da bateria (V)</label>
+              <input id="tensaoBat" type="number" value="12" min="1">
+            </div>
+
+            <div>
+              <label>Capacidade da bateria (Ah)</label>
+              <input id="ahBat" type="number" value="100" min="1">
+            </div>
+
+            <div>
+              <label>Fator de segurança (%)</label>
+              <input id="fpSeg" type="number" value="20" min="0" max="100">
+            </div>
+
+            <div>
+              <label>Temperatura ambiente (°C)</label>
+              <input id="temp" type="number" value="25" min="-10" max="60">
+            </div>
+          </div>
+
+          <div class="actions">
+            <button class="primary" onclick="calcular()">Calcular autonomia</button>
+            <button class="secondary" onclick="adicionarCarga()">Adicionar carga</button>
+            <button class="ghost" onclick="window.print()">Imprimir relatório</button>
+            <button class="ghost" onclick="limpar()">Limpar cargas</button>
+          </div>
+        </div>
+
+        <div class="card">
+          <h2><span class="num">2</span>Levantamento de cargas</h2>
+          <p class="small">Consumo diário = potência × quantidade × horas de uso.</p>
+
+          <div class="table-wrap">
+            <table id="tabelaCargas">
+              <thead>
+                <tr>
+                  <th>Carga</th>
+                  <th>Potência (W)</th>
+                  <th>Qtd.</th>
+                  <th>Horas/dia</th>
+                  <th>Wh/dia</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td><input value="Lâmpadas LED" oninput="atualizarCargas()"></td>
+                  <td><input type="number" value="60" min="0" oninput="atualizarCargas()"></td>
+                  <td><input type="number" value="1" min="0" oninput="atualizarCargas()"></td>
+                  <td><input type="number" value="6" min="0" max="24" oninput="atualizarCargas()"></td>
+                  <td class="wh">360</td>
+                </tr>
+                <tr>
+                  <td><input value="Geladeira" oninput="atualizarCargas()"></td>
+                  <td><input type="number" value="150" min="0" oninput="atualizarCargas()"></td>
+                  <td><input type="number" value="1" min="0" oninput="atualizarCargas()"></td>
+                  <td><input type="number" value="10" min="0" max="24" oninput="atualizarCargas()"></td>
+                  <td class="wh">1500</td>
+                </tr>
+                <tr>
+                  <td><input value="Bomba d’água" oninput="atualizarCargas()"></td>
+                  <td><input type="number" value="500" min="0" oninput="atualizarCargas()"></td>
+                  <td><input type="number" value="1" min="0" oninput="atualizarCargas()"></td>
+                  <td><input type="number" value="1" min="0" max="24" oninput="atualizarCargas()"></td>
+                  <td class="wh">500</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <div class="card">
+          <h2><span class="num">3</span>Glossário técnico</h2>
+
+          <div class="tech-grid">
+            <div class="tech"><b>DoD</b>Profundidade de descarga. Se a bateria tem 100 Ah e o DoD é 80%, usa-se até 80 Ah.</div>
+            <div class="tech"><b>SOC</b>Estado de carga. 100% significa bateria cheia; 50% significa metade da carga disponível.</div>
+            <div class="tech"><b>SOH</b>Estado de saúde. Indica o envelhecimento da bateria em relação à condição nova.</div>
+            <div class="tech"><b>Ah</b>Ampère-hora. Representa a capacidade elétrica da bateria.</div>
+            <div class="tech"><b>Wh</b>Watt-hora. Representa energia. Fórmula: Wh = V × Ah.</div>
+            <div class="tech"><b>Taxa C</b>Velocidade de carga ou descarga em relação à capacidade da bateria.</div>
+          </div>
+
+          <h3>Tecnologias de baterias</h3>
+          <div class="tech-grid">
+            <div class="tech"><b>Chumbo-ácido</b>Mais simples e econômica. Pesada, menor vida útil e geralmente trabalha com DoD menor.</div>
+            <div class="tech"><b>AGM</b>Bateria selada de chumbo. Não exige reposição de água e é comum em nobreaks e telecom.</div>
+            <div class="tech"><b>Gel</b>Eletrólito em gel. Boa resistência à vibração e uso estacionário.</div>
+            <div class="tech"><b>OPzS</b>Estacionária tubular ventilada. Alta durabilidade, mas exige manutenção e ventilação.</div>
+            <div class="tech"><b>OPzV</b>Estacionária tubular selada. Alta vida útil e menor manutenção que OPzS.</div>
+            <div class="tech"><b>Lítio/LiFePO₄</b>Alta eficiência, maior DoD, mais ciclos, menor peso e uso comum em sistemas híbridos modernos.</div>
+          </div>
+        </div>
+
+        <div class="card">
+          <h2><span class="num">4</span>Boas práticas técnicas</h2>
+          <div class="box green">
+            Esta ferramenta é didática. Para projeto real, consulte manual do fabricante, datasheet do inversor/carregador,
+            proteções CC/CA, queda de tensão, ventilação, aterramento, seccionamento e requisitos de segurança.
+          </div>
+
+          <div class="tech-grid">
+            <div class="tech"><b>NR-10</b>Segurança em instalações e serviços em eletricidade.</div>
+            <div class="tech"><b>ABNT NBR 5410</b>Instalações elétricas de baixa tensão.</div>
+            <div class="tech"><b>ABNT NBR 16690</b>Instalações elétricas de arranjos fotovoltaicos.</div>
+            <div class="tech"><b>Manual do fabricante</b>Define DoD, corrente máxima, tensão, BMS, ciclos e temperatura.</div>
+          </div>
+        </div>
+      </section>
+
+      <aside class="sticky">
+        <div class="card">
+          <div class="pill" id="modoTexto">Modo: Off-grid</div>
+          <h2>Resultados</h2>
+
+          <div class="results">
+            <div class="result orange">
+              <div class="r-title">Consumo diário</div>
+              <div class="r-value" id="rConsumo">0 Wh/dia</div>
+              <div class="small">Energia total consumida por dia.</div>
+            </div>
+
+            <div class="result">
+              <div class="r-title">Banco recomendado</div>
+              <div class="r-value" id="rBancoAh">0 Ah</div>
+              <div class="small">Considera DoD, eficiência e segurança.</div>
+            </div>
+
+            <div class="result green">
+              <div class="r-title">Energia útil</div>
+              <div class="r-value" id="rEnergiaUtil">0 Wh</div>
+              <div class="small">Energia aproveitável do banco instalado.</div>
+            </div>
+
+            <div class="result red">
+              <div class="r-title">Autonomia estimada</div>
+              <div class="r-value" id="rAutonomia">0 h</div>
+              <div class="small">Tempo aproximado de funcionamento.</div>
+            </div>
+
+            <div class="result">
+              <div class="r-title">Baterias</div>
+              <div class="r-value" id="rBaterias">0 un.</div>
+              <div class="small" id="rSerieParalelo">Série/paralelo calculado.</div>
+            </div>
+
+            <div class="result orange">
+              <div class="r-title">Corrente média</div>
+              <div class="r-value" id="rCorrente">0 A</div>
+              <div class="small">Ajuda no estudo de cabos e proteção.</div>
+            </div>
+          </div>
+
+          <div id="alertaTecnico"></div>
+
+          <div class="tabs">
+            <button class="tab active" onclick="aba('passo', this)">Passo a passo</button>
+            <button class="tab" onclick="aba('formulas', this)">Fórmulas</button>
+            <button class="tab" onclick="aba('curva', this)">Curva</button>
+          </div>
+
+          <section id="passo" class="content active">
+            <h2>Passo a passo</h2>
+            <div id="passoCalculo"></div>
+            <div class="box" id="interpretacao"></div>
+          </section>
+
+          <section id="formulas" class="content">
+            <h2>Fórmulas</h2>
+            <div class="formula"><strong>Energia da carga:</strong><br>E = P × Qtd × h</div>
+            <div class="formula"><strong>Energia da bateria:</strong><br>Wh = V × Ah</div>
+            <div class="formula"><strong>Banco mínimo:</strong><br>Ah = E<sub>dia</sub> × Dias ÷ (V × DoD × η)</div>
+            <div class="formula"><strong>Energia útil:</strong><br>E<sub>útil</sub> = V × Ah × DoD × η</div>
+            <div class="formula"><strong>Série:</strong><br>N = V<sub>banco</sub> ÷ V<sub>bateria</sub></div>
+            <div class="formula"><strong>Paralelo:</strong><br>N = Ah<sub>necessário</sub> ÷ Ah<sub>bateria</sub></div>
+            <div class="formula"><strong>Corrente média:</strong><br>I = P ÷ V</div>
+            <div class="formula"><strong>Taxa C:</strong><br>C = I ÷ Ah</div>
+          </section>
+
+          <section id="curva" class="content">
+            <h2>Curva de descarga</h2>
+            <div class="curve">
+              <svg viewBox="0 0 640 300">
+                <line x1="60" y1="245" x2="600" y2="245" stroke="#94A3B8" stroke-width="2"/>
+                <line x1="60" y1="35" x2="60" y2="245" stroke="#94A3B8" stroke-width="2"/>
+                <text x="245" y="288" fill="#475569" font-size="14">Capacidade descarregada (%)</text>
+                <text x="12" y="34" fill="#475569" font-size="14">Tensão</text>
+                <polyline points="60,65 140,72 230,82 330,100 430,145 520,205 590,238" fill="none" stroke="#0b4f9c" stroke-width="5" stroke-linecap="round"/>
+                <polyline points="60,78 150,80 260,82 380,88 500,112 590,180" fill="none" stroke="#f05a24" stroke-width="5" stroke-linecap="round"/>
+                <line id="dodLine" x1="492" y1="35" x2="492" y2="245" stroke="#2e9f65" stroke-width="3" stroke-dasharray="8 8"/>
+                <text id="dodText" x="465" y="28" fill="#2e9f65" font-size="14" font-weight="bold">DoD</text>
+                <text x="55" y="265" fill="#475569" font-size="12">0%</text>
+                <text x="470" y="265" fill="#475569" font-size="12">80%</text>
+                <text x="575" y="265" fill="#475569" font-size="12">100%</text>
+              </svg>
+            </div>
+            <div class="box" id="curvaTexto"></div>
+          </section>
+        </div>
+      </aside>
+    </main>
+
+    <footer class="footer">
+      SENAI Hub Inovação e Tecnologia | Ferramenta didática para Energia Solar Fotovoltaica<br>
+      Desenvolvido por <b>Joelson Mendes</b>.
+    </footer>
+  </div>
+
+  <div class="modal-bg" id="modalBg" onclick="fecharModal(event)">
+    <div class="modal">
+      <button class="close" onclick="fecharModal()">Fechar</button>
+      <h3 id="modalTitulo"></h3>
+      <p id="modalTexto"></p>
+    </div>
+  </div>
+
+  <script>
+    const dicas = {
+      sistema: ['Tipo de sistema', 'Off-grid funciona isolado da rede elétrica e depende das baterias quando não há geração solar. Híbrido trabalha com rede elétrica e baterias, normalmente alimentando cargas essenciais em falta de energia.'],
+      tecnologia: ['Tecnologia da bateria', 'Cada tecnologia possui vida útil, DoD, eficiência, custo, manutenção e segurança diferentes. A escolha influencia diretamente a autonomia e a durabilidade do sistema.'],
+      wh: ['Wh - Watt-hora', 'É a unidade de energia. Fórmula: Wh = W × horas. Exemplo: uma lâmpada de 100 W ligada por 5 horas consome 500 Wh.'],
+      autonomia: ['Dias de autonomia', 'É o tempo que o banco de baterias deve alimentar as cargas sem depender da geração solar ou da rede elétrica.'],
+      tensao: ['Tensão do banco', 'É a tensão total do banco de baterias. Sistemas maiores geralmente usam 24 V, 48 V ou mais para reduzir corrente e perdas.'],
+      dod: ['DoD - Profundidade de Descarga', 'Indica quanto da bateria pode ser descarregado. Exemplo: bateria de 100 Ah com DoD de 80% permite usar aproximadamente 80 Ah. Quanto maior o DoD, maior o uso da bateria, mas pode reduzir a vida útil se ultrapassar o recomendado.'],
+      eficiencia: ['Eficiência', 'Representa as perdas do sistema: inversor, cabos, controlador, conexões e temperatura. Exemplo: eficiência de 90% significa que 10% da energia pode ser perdida.'],
+      ah: ['Ah - Ampère-hora', 'É a capacidade elétrica da bateria. Uma bateria de 100 Ah pode fornecer 10 A por 10 h, 20 A por 5 h ou 100 A por 1 h, em condição ideal.']
+    };
+
+    function ajuda(tipo) {
+      document.getElementById('modalTitulo').textContent = dicas[tipo][0];
+      document.getElementById('modalTexto').textContent = dicas[tipo][1];
+      document.getElementById('modalBg').style.display = 'flex';
+    }
+
+    function fecharModal(e) {
+      if (!e || e.target.id === 'modalBg') {
+        document.getElementById('modalBg').style.display = 'none';
+      }
+    }
+
+    function n(id) {
+      return Number(document.getElementById(id).value) || 0;
+    }
+
+    function fmt(v, u) {
+      if (!isFinite(v)) v = 0;
+      return v.toLocaleString('pt-BR', { maximumFractionDigits: 2 }) + ' ' + u;
+    }
+
+    function atualizarCargas() {
+      let total = 0;
+      document.querySelectorAll('#tabelaCargas tbody tr').forEach(tr => {
+        const inputs = tr.querySelectorAll('input');
+        const p = Number(inputs[1].value) || 0;
+        const q = Number(inputs[2].value) || 0;
+        let h = Number(inputs[3].value) || 0;
+        if (h > 24) {
+          h = 24;
+          inputs[3].value = 24;
+        }
+        const wh = p * q * h;
+        tr.querySelector('.wh').textContent = wh.toLocaleString('pt-BR', { maximumFractionDigits: 2 });
+        total += wh;
+      });
+      document.getElementById('consumo').value = total.toFixed(0);
+      calcular();
+    }
+
+    function adicionarCarga() {
+      const tbody = document.querySelector('#tabelaCargas tbody');
+      const tr = document.createElement('tr');
+      tr.innerHTML = `
+        <td><input value="Nova carga" oninput="atualizarCargas()"></td>
+        <td><input type="number" value="100" min="0" oninput="atualizarCargas()"></td>
+        <td><input type="number" value="1" min="0" oninput="atualizarCargas()"></td>
+        <td><input type="number" value="1" min="0" max="24" oninput="atualizarCargas()"></td>
+        <td class="wh">100</td>
+      `;
+      tbody.appendChild(tr);
+      atualizarCargas();
+    }
+
+    function limpar() {
+      document.querySelector('#tabelaCargas tbody').innerHTML = '';
+      document.getElementById('consumo').value = 0;
+      calcular();
+    }
+
+    function aba(id, btn) {
+      document.querySelectorAll('.content').forEach(c => c.classList.remove('active'));
+      document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+      document.getElementById(id).classList.add('active');
+      btn.classList.add('active');
+    }
+
+    function sugestaoTecnologia(tipo) {
+      const dados = {
+        chumbo: {dod: 50, texto: 'Chumbo-ácido: tecnologia econômica, porém pesada e com menor vida útil. Recomenda-se DoD conservador.'},
+        agm: {dod: 50, texto: 'AGM: bateria selada, comum em nobreaks e telecom. Trabalha melhor com DoD moderado.'},
+        gel: {dod: 60, texto: 'Gel: boa para uso estacionário e vibração, mas exige cuidado com corrente de carga.'},
+        opzs: {dod: 70, texto: 'OPzS: estacionária tubular ventilada, alta durabilidade, exige manutenção e ventilação.'},
+        opzv: {dod: 80, texto: 'OPzV: estacionária tubular selada, alta vida útil e menor manutenção.'},
+        litio: {dod: 80, texto: 'Lítio/LiFePO₄: alta eficiência, maior DoD, mais ciclos e menor peso.'}
+      };
+      return dados[tipo] || dados.litio;
+    }
+
+    function calcular() {
+      const modo = document.getElementById('modo').value;
+      const tipo = document.getElementById('tipoBateria').value;
+      const consumo = n('consumo');
+      const dias = n('dias');
+      const tensao = n('tensao');
+      const dodPercent = n('dod');
+      const dod = dodPercent / 100;
+      const eficienciaPercent = n('eficiencia');
+      const eficiencia = eficienciaPercent / 100;
+      const capacidade = n('capacidade');
+      const tensaoBat = n('tensaoBat');
+      const ahBat = n('ahBat');
+      const fpSeg = n('fpSeg') / 100;
+      const temp = n('temp');
+
+      const ahMin = tensao * dod * eficiencia > 0 ? consumo * dias / (tensao * dod * eficiencia) : 0;
+      const ahFinal = ahMin * (1 + fpSeg);
+      const energiaNominal = tensao * capacidade;
+      const energiaUtil = energiaNominal * dod * eficiencia;
+      const autonomiaDias = consumo > 0 ? energiaUtil / consumo : 0;
+      const autonomiaHoras = autonomiaDias * 24;
+      const serie = tensaoBat > 0 ? Math.ceil(tensao / tensaoBat) : 0;
+      const paralelo = ahBat > 0 ? Math.ceil(ahFinal / ahBat) : 0;
+      const totalBat = serie * paralelo;
+      const potenciaMedia = consumo / 24;
+      const corrente = tensao > 0 ? potenciaMedia / tensao : 0;
+      const taxaC = capacidade > 0 ? corrente / capacidade : 0;
+      const whBat = tensaoBat * ahBat;
+
+      document.getElementById('modoTexto').textContent = modo === 'offgrid' ? 'Modo: Off-grid' : 'Modo: Híbrido';
+      document.getElementById('rConsumo').textContent = fmt(consumo, 'Wh/dia');
+      document.getElementById('rBancoAh').textContent = fmt(ahFinal, 'Ah');
+      document.getElementById('rEnergiaUtil').textContent = fmt(energiaUtil, 'Wh');
+      document.getElementById('rAutonomia').textContent = fmt(autonomiaHoras, 'h');
+      document.getElementById('rBaterias').textContent = totalBat + ' un.';
+      document.getElementById('rCorrente').textContent = fmt(corrente, 'A');
+      document.getElementById('rSerieParalelo').textContent = `${serie} em série × ${paralelo} em paralelo. Cada bateria: ${fmt(whBat, 'Wh')}.`;
+
+      const tipoTxt = sugestaoTecnologia(tipo).texto;
+      const ok = autonomiaHoras >= dias * 24;
+
+      document.getElementById('interpretacao').innerHTML = `
+        <b>Interpretação:</b><br>
+        ${modo === 'offgrid' ? 'No off-grid, o banco precisa sustentar as cargas sem rede elétrica.' : 'No híbrido, o banco deve priorizar as cargas essenciais.'}<br><br>
+        ${tipoTxt}<br><br>
+        Banco recomendado: <b>${fmt(ahFinal, 'Ah')}</b>. 
+        Resultado: <b>${ok ? 'atende ou supera a autonomia desejada.' : 'não atende completamente a autonomia desejada.'}</b>
+      `;
+
+      document.getElementById('passoCalculo').innerHTML = `
+        <div class="box"><b>1. Consumo diário:</b><br>E<sub>dia</sub> = ${fmt(consumo, 'Wh/dia')}</div>
+        <div class="box"><b>2. Energia necessária:</b><br>${fmt(consumo, 'Wh/dia')} × ${dias} dia(s) = <b>${fmt(consumo * dias, 'Wh')}</b></div>
+        <div class="box"><b>3. Banco mínimo em Ah:</b><br>Ah = ${fmt(consumo * dias, 'Wh')} ÷ (${tensao} × ${dod.toFixed(2)} × ${eficiencia.toFixed(2)}) = <b>${fmt(ahMin, 'Ah')}</b></div>
+        <div class="box"><b>4. Com fator de segurança:</b><br>Ah final = ${fmt(ahMin, 'Ah')} × ${(1 + fpSeg).toFixed(2)} = <b>${fmt(ahFinal, 'Ah')}</b></div>
+        <div class="box"><b>5. Energia de cada bateria:</b><br>${tensaoBat} V × ${ahBat} Ah = <b>${fmt(whBat, 'Wh')}</b></div>
+        <div class="box"><b>6. Série/paralelo:</b><br>Série = ${tensao} ÷ ${tensaoBat} = <b>${serie}</b><br>Paralelo = ${fmt(ahFinal, 'Ah')} ÷ ${ahBat} = <b>${paralelo}</b><br>Total = <b>${totalBat} bateria(s)</b></div>
+        <div class="box"><b>7. Autonomia do banco instalado:</b><br>Energia útil = ${fmt(energiaNominal, 'Wh')} × ${dod.toFixed(2)} × ${eficiencia.toFixed(2)} = <b>${fmt(energiaUtil, 'Wh')}</b><br>Autonomia = <b>${fmt(autonomiaHoras, 'h')}</b></div>
+        <div class="box"><b>8. Corrente média e Taxa C:</b><br>I = ${fmt(potenciaMedia, 'W')} ÷ ${tensao} V = <b>${fmt(corrente, 'A')}</b><br>Taxa C = ${fmt(corrente, 'A')} ÷ ${capacidade} Ah = <b>${taxaC.toFixed(3)} C</b></div>
+      `;
+
+      document.getElementById('curvaTexto').innerHTML = `
+        <b>Curva selecionada:</b><br>
+        ${tipoTxt}<br><br>
+        DoD usado: <b>${dodPercent.toFixed(0)}%</b><br>
+        Taxa C média: <b>${taxaC.toFixed(3)} C</b><br>
+        Temperatura: <b>${temp.toFixed(0)} °C</b>
+      `;
+
+      let alertas = [];
+      if (tipo === 'chumbo' && dodPercent > 50) alertas.push('DoD acima de 50% para chumbo-ácido pode reduzir bastante a vida útil.');
+      if (tipo === 'agm' && dodPercent > 50) alertas.push('AGM normalmente trabalha melhor com DoD moderado.');
+      if (tipo === 'gel' && dodPercent > 60) alertas.push('Gel exige cuidado com descarga profunda e corrente de carga.');
+      if (tipo === 'litio' && dodPercent > 90) alertas.push('DoD acima de 90% em LiFePO₄ deve ser confirmado no BMS e manual.');
+      if (eficienciaPercent > 96) alertas.push('Eficiência muito alta. Confirme perdas reais do sistema.');
+      if (temp > 35 || temp < 10) alertas.push('Temperatura fora da faixa ideal pode alterar autonomia e vida útil.');
+      if (taxaC > 0.5) alertas.push('Taxa C elevada. Verifique corrente máxima da bateria e proteção CC.');
+
+      document.getElementById('alertaTecnico').innerHTML = alertas.length
+        ? `<div class="box yellow"><b>Atenção técnica:</b><br>${alertas.map(a => '• ' + a).join('<br>')}</div>`
+        : `<div class="box green"><b>Status didático:</b> parâmetros dentro de uma faixa razoável para simulação educacional.</div>`;
+    }
+
+    document.getElementById('tipoBateria').addEventListener('change', function() {
+      document.getElementById('dod').value = sugestaoTecnologia(this.value).dod;
+      calcular();
+    });
+
+    ['modo','consumo','dias','tensao','dod','eficiencia','capacidade','tensaoBat','ahBat','fpSeg','temp'].forEach(id => {
+      document.getElementById(id).addEventListener('input', calcular);
+      document.getElementById(id).addEventListener('change', calcular);
+    });
+
+    atualizarCargas();
+    calcular();
+  </script>
+</body>
+</html>
