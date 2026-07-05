@@ -1,11 +1,13 @@
 {
   "name": "Calculadora de Autonomia de Baterias Solar",
   "short_name": "Baterias Solar",
+  "description": "PWA didático para cálculo de autonomia de banco de baterias solar.",
   "start_url": "./index.html",
   "scope": "./",
   "display": "standalone",
   "background_color": "#f5f8fc",
   "theme_color": "#0b4f9c",
+  "orientation": "portrait-primary",
   "icons": [
     {
       "src": "icon-192.png",
