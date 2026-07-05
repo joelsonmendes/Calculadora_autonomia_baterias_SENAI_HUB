@@ -23,7 +23,20 @@
             --line: #dbe5f1;
             --bg: #f5f8fc;
             --white: #ffffff;
-            --shadow: 0 12px 32px rgba(15, 23, 42, 0.08);
+
+            /* Sombras 3D por camadas */
+            --shadow-sm: 0 2px 4px rgba(15, 23, 42, 0.06),
+                0 4px 8px rgba(15, 23, 42, 0.04);
+            --shadow-md: 0 4px 8px rgba(15, 23, 42, 0.07),
+                0 8px 20px rgba(15, 23, 42, 0.06),
+                0 16px 40px rgba(15, 23, 42, 0.04);
+            --shadow-lg: 0 6px 12px rgba(15, 23, 42, 0.08),
+                0 12px 28px rgba(15, 23, 42, 0.07),
+                0 20px 60px rgba(15, 23, 42, 0.05);
+            --shadow-xl: 0 8px 16px rgba(15, 23, 42, 0.10),
+                0 16px 36px rgba(15, 23, 42, 0.08),
+                0 24px 72px rgba(15, 23, 42, 0.06);
+
             --radius: 22px;
         }
 
@@ -37,13 +50,16 @@
 
         body {
             margin: 0;
-            font-family: Arial, Helvetica, sans-serif;
+            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
             color: var(--text);
             background:
-                radial-gradient(circle at top left, rgba(11, 79, 156, 0.10), transparent 34%),
-                radial-gradient(circle at bottom right, rgba(240, 90, 36, 0.09), transparent 30%),
+                radial-gradient(circle at 15% 10%, rgba(11, 79, 156, 0.10), transparent 38%),
+                radial-gradient(circle at 85% 90%, rgba(240, 90, 36, 0.09), transparent 35%),
+                radial-gradient(circle at 50% 50%, rgba(200, 215, 235, 0.15), transparent 60%),
                 var(--bg);
             min-height: 100vh;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
         }
 
         /* ==================== CONTAINER ==================== */
@@ -56,9 +72,12 @@
         /* ==================== HERO ==================== */
         .hero {
             background: var(--white);
-            border: 1px solid var(--line);
+            border: 1px solid #e8eef5;
             border-radius: 28px;
-            box-shadow: var(--shadow);
+            /* Sombras 3D */
+            box-shadow:
+                0 1px 0 #ffffff inset,
+                var(--shadow-xl);
             padding: 16px;
             display: flex;
             flex-direction: column;
@@ -66,10 +85,12 @@
             text-align: center;
             gap: 14px;
             margin-bottom: 14px;
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
         }
 
         .logo-card {
-            background: #050505;
+            background: #ffffff;
+            border: 1px solid #e8eef5;
             border-radius: 20px;
             padding: 12px;
             display: grid;
@@ -77,6 +98,10 @@
             width: min(100%, 200px);
             min-height: 90px;
             flex-shrink: 0;
+            /* Sombra 3D interna */
+            box-shadow:
+                0 1px 0 #ffffff inset,
+                var(--shadow-md);
         }
 
         .logo-card img {
@@ -100,6 +125,7 @@
             font-weight: 800;
             font-size: clamp(0.72rem, 1.8vw, 0.9rem);
             margin-bottom: 8px;
+            box-shadow: 0 2px 6px rgba(240, 90, 36, 0.10);
         }
 
         h1 {
@@ -107,6 +133,7 @@
             margin: 0;
             font-size: clamp(1.3rem, 3.5vw, 2.5rem);
             line-height: 1.12;
+            text-shadow: 0 1px 0 rgba(255, 255, 255, 0.8);
         }
 
         .hero p {
@@ -124,14 +151,50 @@
             align-items: start;
         }
 
-        /* ==================== CARDS ==================== */
+        /* ==================== CARDS COM EFEITO 3D ==================== */
         .card {
             background: var(--white);
-            border: 1px solid var(--line);
+            border: 1px solid #e8eef5;
             border-radius: var(--radius);
-            box-shadow: var(--shadow);
+            /* Efeito 3D: highlight no topo + sombras em camada */
+            box-shadow:
+                0 1px 0 #ffffff inset,
+                0 -1px 0 rgba(255, 255, 255, 0.6) inset,
+                var(--shadow-lg);
             padding: 14px;
             margin-bottom: 14px;
+            transition: transform 0.2s ease, box-shadow 0.25s ease;
+            position: relative;
+        }
+
+        /* Relevo sutil no topo do card - linha de luz */
+        .card::before {
+            content: '';
+            position: absolute;
+            top: 1px;
+            left: 16px;
+            right: 16px;
+            height: 1px;
+            background: linear-gradient(90deg,
+                    transparent,
+                    rgba(255, 255, 255, 0.9) 20%,
+                    rgba(255, 255, 255, 0.9) 80%,
+                    transparent);
+            border-radius: 2px;
+            pointer-events: none;
+        }
+
+        /* Efeito hover 3D apenas em desktop */
+        @media (hover: hover) {
+            .card:hover {
+                transform: translateY(-2px);
+                box-shadow:
+                    0 1px 0 #ffffff inset,
+                    0 -1px 0 rgba(255, 255, 255, 0.6) inset,
+                    0 8px 18px rgba(15, 23, 42, 0.10),
+                    0 16px 40px rgba(15, 23, 42, 0.08),
+                    0 24px 72px rgba(15, 23, 42, 0.06);
+            }
         }
 
         h2 {
@@ -158,6 +221,7 @@
             font-size: 0.85rem;
             margin-right: 6px;
             font-weight: 900;
+            box-shadow: 0 2px 4px rgba(11, 79, 156, 0.12), 0 1px 0 #ffffff inset;
         }
 
         /* ==================== FORM GRID ==================== */
@@ -184,21 +248,30 @@
         input,
         select {
             width: 100%;
-            padding: 11px 12px;
+            padding: 12px 12px;
             border: 1px solid #cbd5e1;
             border-radius: 13px;
-            font-size: clamp(0.9rem, 1.5vw, 1rem);
-            background: white;
+            /* 16px evita zoom no iOS */
+            font-size: 16px;
+            background: #fafcfe;
             outline: none;
             transition: border-color 0.2s, box-shadow 0.2s;
             -webkit-appearance: none;
             appearance: none;
+            /* Sombra interna 3D sutil (rebaixo) */
+            box-shadow:
+                inset 0 2px 4px rgba(15, 23, 42, 0.06),
+                0 1px 0 rgba(255, 255, 255, 0.8);
         }
 
         input:focus,
         select:focus {
             border-color: var(--blue);
-            box-shadow: 0 0 0 3px rgba(11, 79, 156, 0.12);
+            box-shadow:
+                inset 0 2px 4px rgba(15, 23, 42, 0.06),
+                0 0 0 3px rgba(11, 79, 156, 0.12),
+                0 1px 0 rgba(255, 255, 255, 0.8);
+            background: #ffffff;
         }
 
         select {
@@ -206,6 +279,14 @@
             background-repeat: no-repeat;
             background-position: right 12px center;
             padding-right: 32px;
+            cursor: pointer;
+        }
+
+        /* Inputs da tabela: tamanho menor */
+        td input {
+            font-size: 14px;
+            padding: 8px;
+            border-radius: 10px;
         }
 
         .help {
@@ -223,11 +304,13 @@
             font-size: 0.78rem;
             display: inline-grid;
             place-items: center;
-            transition: background 0.2s;
+            transition: background 0.2s, transform 0.15s;
+            box-shadow: 0 2px 6px rgba(240, 90, 36, 0.12), 0 1px 0 #ffffff inset;
         }
 
         .help:active {
             background: #ffd8c8;
+            transform: scale(0.93);
         }
 
         .hint {
@@ -248,33 +331,52 @@
         button {
             border: 0;
             border-radius: 14px;
-            padding: 11px 14px;
-            min-height: 44px;
+            padding: 12px 16px;
+            min-height: 48px;
             font-weight: 900;
             cursor: pointer;
-            font-size: clamp(0.82rem, 1.4vw, 0.9rem);
-            transition: opacity 0.2s, transform 0.1s;
+            font-size: 0.9rem;
+            transition: opacity 0.2s, transform 0.1s, box-shadow 0.2s;
             white-space: nowrap;
+            flex: 1 1 auto;
+            min-width: fit-content;
+
+            /* Efeito 3D nos botões */
+            box-shadow:
+                0 1px 0 rgba(255, 255, 255, 0.3) inset,
+                0 4px 8px rgba(15, 23, 42, 0.12),
+                0 8px 16px rgba(15, 23, 42, 0.06);
+            position: relative;
         }
 
         button:active {
             transform: scale(0.97);
+            box-shadow:
+                inset 0 2px 6px rgba(0, 0, 0, 0.15),
+                0 2px 4px rgba(15, 23, 42, 0.08);
         }
 
         .primary {
-            background: var(--blue);
+            background: linear-gradient(180deg, #1a6bc4 0%, #0b4f9c 100%);
             color: white;
         }
 
         .secondary {
-            background: var(--orange);
+            background: linear-gradient(180deg, #f5744a 0%, #e04a18 100%);
             color: white;
         }
 
         .ghost {
-            background: var(--blue-soft);
+            background: linear-gradient(180deg, #f5faff 0%, #eaf3ff 100%);
             color: var(--blue);
             border: 1px solid #cfe3ff;
+        }
+
+        @media (max-width: 480px) {
+            button {
+                flex: 1 1 100%;
+                width: 100%;
+            }
         }
 
         /* ==================== TABLE ==================== */
@@ -284,30 +386,25 @@
             border-radius: 16px;
             -webkit-overflow-scrolling: touch;
             position: relative;
+            box-shadow:
+                0 1px 0 #ffffff inset,
+                var(--shadow-sm);
         }
 
-        /* Sombra indicadora de scroll */
+        /* Sombra indicadora de scroll - apenas em telas maiores */
         .table-wrap::after {
-            content: '';
-            position: absolute;
-            top: 0;
-            right: 0;
-            bottom: 0;
-            width: 30px;
-            background: linear-gradient(to left, rgba(255, 255, 255, 0.9), transparent);
-            pointer-events: none;
-            border-radius: 0 16px 16px 0;
+            display: none;
         }
 
         table {
             width: 100%;
-            min-width: 600px;
+            min-width: 480px;
             border-collapse: collapse;
             background: white;
         }
 
         th {
-            background: var(--blue-soft);
+            background: linear-gradient(180deg, #f0f6ff 0%, var(--blue-soft) 100%);
             color: var(--blue);
             text-align: left;
             padding: 10px;
@@ -322,12 +419,6 @@
             font-size: clamp(0.8rem, 1.3vw, 0.9rem);
         }
 
-        td input {
-            padding: 8px;
-            border-radius: 10px;
-            font-size: clamp(0.8rem, 1.3vw, 0.9rem);
-        }
-
         /* ==================== RESULTS ==================== */
         .results {
             display: grid;
@@ -336,28 +427,34 @@
         }
 
         .result {
-            background: #f8fbff;
+            background: linear-gradient(180deg, #f8fbff 0%, #eef4fb 100%);
             border: 1px solid #dbeafe;
             border-left: 5px solid var(--blue);
             border-radius: 16px;
             padding: 12px;
             min-height: auto;
+            /* Sombra 3D */
+            box-shadow:
+                0 1px 0 #ffffff inset,
+                0 3px 8px rgba(15, 23, 42, 0.06);
+            position: relative;
+            transition: transform 0.2s ease;
         }
 
         .result.orange {
-            background: var(--orange-soft);
+            background: linear-gradient(180deg, #fff5f0 0%, #fff1ea 100%);
             border-color: #ffd8c8;
             border-left-color: var(--orange);
         }
 
         .result.green {
-            background: var(--green-soft);
+            background: linear-gradient(180deg, #f0faf4 0%, #ebf8f1 100%);
             border-color: #ccebd8;
             border-left-color: var(--green);
         }
 
         .result.red {
-            background: var(--red-soft);
+            background: linear-gradient(180deg, #fff4f5 0%, #fff0f2 100%);
             border-color: #ffd1d7;
             border-left-color: var(--red);
         }
@@ -373,6 +470,7 @@
             color: var(--blue);
             font-size: clamp(1.2rem, 2.5vw, 1.7rem);
             font-weight: 900;
+            text-shadow: 0 1px 0 rgba(255, 255, 255, 0.6);
         }
 
         .orange .r-value {
@@ -397,13 +495,14 @@
         .pill {
             display: inline-block;
             padding: 6px 10px;
-            background: var(--orange-soft);
+            background: linear-gradient(180deg, #fff5f0 0%, var(--orange-soft) 100%);
             color: var(--orange);
             border: 1px solid #ffd8c8;
             border-radius: 999px;
             font-weight: 900;
             margin-bottom: 10px;
             font-size: clamp(0.78rem, 1.4vw, 0.88rem);
+            box-shadow: 0 2px 6px rgba(240, 90, 36, 0.08), 0 1px 0 #ffffff inset;
         }
 
         /* ==================== TABS ==================== */
@@ -415,20 +514,22 @@
         }
 
         .tab {
-            background: var(--blue-soft);
+            background: linear-gradient(180deg, #f5faff 0%, var(--blue-soft) 100%);
             color: var(--blue);
             border: 1px solid #cfe3ff;
             padding: 8px 11px;
             border-radius: 999px;
             font-size: clamp(0.78rem, 1.3vw, 0.85rem);
             cursor: pointer;
-            transition: background 0.2s, color 0.2s;
+            transition: background 0.2s, color 0.2s, box-shadow 0.2s;
+            box-shadow: 0 2px 4px rgba(11, 79, 156, 0.08), 0 1px 0 #ffffff inset;
         }
 
         .tab.active {
-            background: var(--blue);
+            background: linear-gradient(180deg, #1a6bc4 0%, var(--blue) 100%);
             color: white;
             border-color: var(--blue);
+            box-shadow: 0 4px 10px rgba(11, 79, 156, 0.25);
         }
 
         .content {
@@ -441,32 +542,33 @@
 
         /* ==================== BOXES ==================== */
         .box {
-            background: #f8fbff;
+            background: linear-gradient(180deg, #f8fbff 0%, #eef4fb 100%);
             border: 1px solid #dbeafe;
             border-radius: 14px;
             padding: 12px;
             line-height: 1.5;
             margin: 8px 0;
             font-size: clamp(0.82rem, 1.3vw, 0.9rem);
+            box-shadow: 0 1px 0 #ffffff inset, var(--shadow-sm);
         }
 
         .box.orange {
-            background: var(--orange-soft);
+            background: linear-gradient(180deg, #fff5f0 0%, var(--orange-soft) 100%);
             border-color: #ffd8c8;
         }
 
         .box.green {
-            background: var(--green-soft);
+            background: linear-gradient(180deg, #f0faf4 0%, var(--green-soft) 100%);
             border-color: #ccebd8;
         }
 
         .box.yellow {
-            background: var(--yellow-soft);
+            background: linear-gradient(180deg, #fffbf0 0%, var(--yellow-soft) 100%);
             border-color: #ffe3ad;
         }
 
         .formula {
-            background: #f7f9fc;
+            background: linear-gradient(180deg, #f9fafb 0%, #f0f3f6 100%);
             color: #1f2937;
             border: 1px solid var(--line);
             border-left: 5px solid var(--orange);
@@ -475,6 +577,7 @@
             margin: 8px 0;
             line-height: 1.55;
             font-size: clamp(0.82rem, 1.3vw, 0.9rem);
+            box-shadow: 0 1px 0 #ffffff inset, var(--shadow-sm);
         }
 
         .formula strong {
@@ -495,6 +598,9 @@
             padding: 12px;
             line-height: 1.45;
             font-size: clamp(0.8rem, 1.3vw, 0.9rem);
+            box-shadow:
+                0 1px 0 #ffffff inset,
+                0 2px 6px rgba(15, 23, 42, 0.04);
         }
 
         .tech b {
@@ -510,6 +616,7 @@
             border-radius: 16px;
             padding: 10px;
             margin-top: 10px;
+            box-shadow: 0 1px 0 #ffffff inset, var(--shadow-sm);
         }
 
         svg {
@@ -538,6 +645,7 @@
             position: fixed;
             inset: 0;
             background: rgba(15, 23, 42, 0.45);
+            backdrop-filter: blur(4px);
             z-index: 20;
             align-items: center;
             justify-content: center;
@@ -551,7 +659,9 @@
             background: white;
             border-radius: 20px;
             padding: 16px;
-            box-shadow: 0 20px 70px rgba(0, 0, 0, 0.28);
+            box-shadow:
+                0 1px 0 #ffffff inset,
+                0 20px 70px rgba(0, 0, 0, 0.28);
             border: 1px solid var(--line);
             position: relative;
         }
@@ -582,11 +692,12 @@
             font-weight: 800;
             cursor: pointer;
             font-size: 0.85rem;
+            box-shadow: 0 2px 6px rgba(240, 90, 36, 0.10), 0 1px 0 #ffffff inset;
         }
 
-        /* ==================== STICKY (Desktop Only) ==================== */
+        /* ==================== STICKY ==================== */
         .sticky {
-            /* Sticky only applied on desktop via media query */;
+            /* Apenas aplicado via media query desktop */;
         }
 
         /* ==================== PRINT ==================== */
@@ -606,6 +717,10 @@
                 page-break-inside: avoid;
             }
 
+            .card::before {
+                display: none;
+            }
+
             button,
             .tabs,
             .modal-bg {
@@ -622,6 +737,7 @@
 
             .table-wrap {
                 overflow: visible;
+                box-shadow: none;
             }
 
             .table-wrap::after {
@@ -634,6 +750,10 @@
 
             .results {
                 grid-template-columns: repeat(2, 1fr);
+            }
+
+            .result {
+                box-shadow: none;
             }
         }
 
@@ -681,8 +801,8 @@
             }
 
             button {
-                padding: 11px 16px;
-                font-size: 0.88rem;
+                padding: 12px 16px;
+                font-size: 0.9rem;
             }
 
             .card {
@@ -691,10 +811,6 @@
 
             .result {
                 padding: 14px;
-            }
-
-            .table-wrap::after {
-                width: 40px;
             }
         }
 
@@ -737,6 +853,20 @@
             .container {
                 padding: 16px;
             }
+
+            /* Sombra de scroll na tabela visível */
+            .table-wrap::after {
+                display: block;
+                content: '';
+                position: absolute;
+                top: 0;
+                right: 0;
+                bottom: 0;
+                width: 30px;
+                background: linear-gradient(to left, rgba(255, 255, 255, 0.9), transparent);
+                pointer-events: none;
+                border-radius: 0 16px 16px 0;
+            }
         }
 
         /* ================================================================ */
@@ -777,18 +907,95 @@
         }
 
         /* ================================================================ */
+        /*                    MOBILE: até 480px                            */
+        /* ================================================================ */
+        @media (max-width: 480px) {
+            .hero {
+                padding: 12px;
+                gap: 10px;
+                border-radius: 22px;
+            }
+
+            .logo-card {
+                width: 160px;
+                min-height: 80px;
+                padding: 10px;
+            }
+
+            h1 {
+                font-size: 1.15rem;
+            }
+
+            .hero p {
+                font-size: 0.85rem;
+            }
+
+            .card {
+                padding: 12px;
+                border-radius: 18px;
+            }
+
+            .card::before {
+                left: 10px;
+                right: 10px;
+            }
+
+            .results {
+                gap: 8px;
+            }
+
+            .result {
+                padding: 12px;
+            }
+
+            .r-value {
+                font-size: 1.2rem;
+            }
+
+            .tabs {
+                gap: 4px;
+            }
+
+            .tab {
+                padding: 6px 10px;
+                font-size: 0.78rem;
+            }
+
+            input,
+            select {
+                font-size: 16px;
+                padding: 12px 10px;
+            }
+
+            table {
+                min-width: 420px;
+            }
+
+            th,
+            td {
+                padding: 7px;
+                font-size: 0.78rem;
+            }
+
+            td input {
+                font-size: 14px;
+                padding: 7px;
+            }
+        }
+
+        /* ================================================================ */
         /*                    PHONE MUITO PEQUENO: < 380px                 */
         /* ================================================================ */
         @media (max-width: 380px) {
             .hero {
-                padding: 12px;
-                border-radius: 20px;
+                padding: 10px;
+                border-radius: 18px;
             }
 
             .logo-card {
-                width: 150px;
-                min-height: 70px;
-                padding: 10px;
+                width: 140px;
+                min-height: 65px;
+                padding: 8px;
             }
 
             .card {
@@ -798,15 +1005,15 @@
 
             input,
             select {
-                padding: 10px;
-                font-size: 0.88rem;
+                padding: 10px 8px;
+                font-size: 16px;
                 border-radius: 10px;
             }
 
             button {
                 padding: 10px 12px;
-                min-height: 40px;
-                font-size: 0.8rem;
+                min-height: 44px;
+                font-size: 0.82rem;
                 border-radius: 11px;
                 width: 100%;
             }
@@ -827,16 +1034,16 @@
             th,
             td {
                 padding: 6px;
-                font-size: 0.76rem;
+                font-size: 0.74rem;
             }
 
             td input {
                 padding: 6px;
-                font-size: 0.76rem;
+                font-size: 13px;
             }
 
             table {
-                min-width: 480px;
+                min-width: 400px;
             }
         }
     </style>
